@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>食品溯源系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .safety-level {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .safety-badge {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 12px 0;
+            border-bottom: 1px dashed #f0f0f0;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 16px;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px #e0e0e0;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .timeline-status {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .conclusion {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 16px;
+        }
+
+        .conclusion-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .conclusion-text {
+            font-size: 14px;
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .error-card {
+            text-align: center;
+            padding: 40px 24px;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .error-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .error-text {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .expiry-countdown {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .countdown-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 4px;
+        }
+
+        .countdown-value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin-top: 20px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 食品溯源系统</h1>
+            <p>扫码查看食品详细信息</p>
+        </div>
+
+        <div id="content">
+            <div class="card error-card">
+                <div class="error-icon">🔍</div>
+                <div class="error-title">加载中...</div>
+                <div class="error-text">正在获取食品信息...</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>食品安全，人人有责</p>
+        </div>
+    </div>
+
+    <script>
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function calculateDaysRemaining(productionDate, shelfLife) {
+            const production = new Date(productionDate);
+            const days = parseInt(shelfLife);
+            const expiry = new Date(production);
+            expiry.setDate(expiry.getDate() + days);
+            const today = new Date();
+            const diffTime = expiry - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.max(0, diffDays);
+        }
+
+        async function loadProductInfo() {
+            const productId = getUrlParam('id');
+            
+            if (!productId) {
+                document.getElementById('content').innerHTML = `
+                    <div class="card error-card">
+                        <div class="error-icon">❌</div>
+                        <div class="error-title">缺少产品编号</div>
+                        <div class="error-text">请通过二维码扫码访问，或在URL中添加?id=产品编号</div>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch('products.json');
+                const data = await response.json();
+                const product = data.products.find(p => p.id === productId);
+
+                if (!product) {
+                    document.getElementById('content').innerHTML = `
+                        <div class="card error-card">
+                            <div class="error-icon">❓</div>
+                            <div class="error-title">未找到产品</div>
+                            <div class="error-text">产品编号 ${productId} 不存在</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const daysRemaining = calculateDaysRemaining(product.date, product.shelfLife);
+                
+                const timelineHtml = product.logistics.map(item => `
+                    <div class="timeline-item">
+                        <div class="timeline-time">${item.time}</div>
+                        <div class="timeline-status">${item.status}</div>
+                    </div>
+                `).join('');
+
+                document.getElementById('content').innerHTML = `
+                    <div class="card">
+                        <div class="product-name">${product.name}</div>
+                        
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">产品编号</div>
+                                <div class="info-value">${product.id}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">批次号</div>
+                                <div class="info-value">${product.batch}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">产地</div>
+                                <div class="info-value">${product.origin}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">生产日期</div>
+                                <div class="info-value">${formatDate(product.date)}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">保质期</div>
+                                <div class="info-value">${product.shelfLife}</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">检测结果</div>
+                                <div class="info-value">${product.testResult}</div>
+                            </div>
+                        </div>
+
+                        <div class="status-badge status-pass">✓ ${product.testResult}</div>
+                        
+                        <div class="safety-level">
+                            <span class="info-label">安全等级</span>
+                            <span class="safety-badge">${product.safetyLevel}</span>
+                        </div>
+
+                        <div class="expiry-countdown">
+                            <div class="countdown-label">距离保质期还有</div>
+                            <div class="countdown-value">${daysRemaining} 天</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 style="margin-bottom: 16px; color: #333; font-size: 16px;">📦 物流轨迹</h3>
+                        <div class="timeline">${timelineHtml}</div>
+                    </div>
+
+                    <div class="card">
+                        <div class="conclusion">
+                            <div class="conclusion-title">📝 溯源结论</div>
+                            <div class="conclusion-text">${product.conclusion}</div>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                document.getElementById('content').innerHTML = `
+                    <div class="card error-card">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-title">加载失败</div>
+                        <div class="error-text">无法获取食品数据，请检查网络连接</div>
+                    </div>
+                `;
+                console.error('Error loading product info:', error);
+            }
+        }
+
+        window.onload = loadProductInfo;
+    </script>
+</body>
+</html>
